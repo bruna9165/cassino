@@ -94,8 +94,10 @@ export function Transactions() {
 
   return (
     <LayoutHome>
-      <Heading className="mb-10" >Saldo e Transações</Heading>
-      <div className="max-h-screen">
+      <div>
+
+        <Heading className="" >Saldo e Transações</Heading>
+      </div>
         <div className="grid grid-cols-12 gap-6">
           {/* Transaction History - Left Column */}
           <div className="col-span-8">
@@ -199,43 +201,23 @@ export function Transactions() {
               </div>
             </div>
           </div>
-
-  <div className="col-span-4">
-    <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-7">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img src="wallet.png" alt="Wallet Icon" className="w-5 h-5" />
-            <h2 className="text-lg font-semibold text-white">Saldo Disponível</h2>
-          </div>
-        </div>
-        <div>
-          <span className="font-bold text-2xl text-white">R$0,01</span>
-        </div>
-        <div className="space-y-2">
-          <Button className="flex items-center space-x-2">
-            <DollarSign className="h-4 w-4" />
-            <span>Sacar</span>
-          </Button>
-        </div>
-      </div>
-    </div>
-  </div>
-          {/* Balance Section - Right Column */}
-          <div className="col-span-4 space-y-4">
-            <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-white">Saldo</h2>
-                <span className="font-bold text-white">R$0,01</span>
-              </div>
+          <div className="col-span-4 space-y-4 ">
+            <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-7">
               <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Saque disponível</span>
-                  <span className="text-white">R$0,01</span>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <img src="wallet.png" alt="Wallet Icon" className="w-5 h-5" />
+                    <h2 className="text-lg font-semibold text-white">Saldo Disponível</h2>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-bold text-2xl text-white">R$0,01</span>
                 </div>
                 <div className="space-y-2">
-                  <Button>Sacar</Button>
-                  <Button className="bg-green-600">Depositar</Button>
+                  <Button className="flex items-center space-x-2">
+                    <DollarSign className="h-4 w-4" />
+                    <span>Sacar</span>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -244,7 +226,6 @@ export function Transactions() {
             </div>
           </div>
         </div>
-      </div>
     </LayoutHome>
   );
 }
