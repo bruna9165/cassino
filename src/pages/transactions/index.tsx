@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { CircleDollarSign } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
+import { DepositSection } from "@/components/Deposito/deposito";
 
 interface Transaction {
   id: string;
@@ -77,6 +78,17 @@ export function Transactions() {
   ];
 
   const tabs = ["Todos", "Depósitos", "Saques", "Histórico de Jogadas"];
+  const handleDeposit = (amount: number, method: string) => {
+    // In a real app, this would call an API to process the deposit
+    const newTransaction = {
+      id: `tx${transactions.length + 1}`,
+      type: "deposit",
+      method,
+      amount,
+      date: new Date(),
+      status: "completed",
+    }
+  }
   
 
   return (
@@ -188,7 +200,7 @@ export function Transactions() {
           </div>
 
           {/* Balance Section - Right Column */}
-          <div className="col-span-4">
+          <div className="col-span-4 space-y-4">
             <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-4">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold text-white">Saldo</h2>
@@ -204,6 +216,9 @@ export function Transactions() {
                   <Button className="bg-green-600">Depositar</Button>
                 </div>
               </div>
+            </div>
+            <div>
+              <DepositSection onDeposit={handleDeposit} />
             </div>
           </div>
         </div>
