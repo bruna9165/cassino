@@ -6,6 +6,7 @@ import { useState } from "react";
 import { CircleDollarSign } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
 import { DollarSign } from "lucide-react"
+import { DepositSection } from "@/components/Deposito/deposito";
 
 interface Transaction {
   id: string;
@@ -78,12 +79,25 @@ export function Transactions() {
   ];
 
   const tabs = ["Todos", "Depósitos", "Saques", "Histórico de Jogadas"];
+  const handleDeposit = (amount: number, method: string) => {
+    // In a real app, this would call an API to process the deposit
+    const newTransaction = {
+      id: `tx${transactions.length + 1}`,
+      type: "deposit",
+      method,
+      amount,
+      date: new Date(),
+      status: "completed",
+    }
+  }
   
 
   return (
     <LayoutHome>
-      <Heading className="mb-10" >Saldo e Transações</Heading>
-      <div className="max-h-screen">
+      <div>
+
+        <Heading className="" >Saldo e Transações</Heading>
+      </div>
         <div className="grid grid-cols-12 gap-6">
           {/* Transaction History - Left Column */}
           <div className="col-span-8">
@@ -187,30 +201,31 @@ export function Transactions() {
               </div>
             </div>
           </div>
-
-  <div className="col-span-4">
-    <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-7">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img src="wallet.png" alt="Wallet Icon" className="w-5 h-5" />
-            <h2 className="text-lg font-semibold text-white">Saldo Disponível</h2>
+          <div className="col-span-4 space-y-4 ">
+            <div className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-7">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <img src="wallet.png" alt="Wallet Icon" className="w-5 h-5" />
+                    <h2 className="text-lg font-semibold text-white">Saldo Disponível</h2>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-bold text-2xl text-white">R$0,01</span>
+                </div>
+                <div className="space-y-2">
+                  <Button className="flex items-center space-x-2">
+                    <DollarSign className="h-4 w-4" />
+                    <span>Sacar</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <DepositSection onDeposit={handleDeposit} />
+            </div>
           </div>
         </div>
-        <div>
-          <span className="font-bold text-2xl text-white">R$0,01</span>
-        </div>
-        <div className="space-y-2">
-          <Button className="flex items-center space-x-2">
-            <DollarSign className="h-4 w-4" />
-            <span>Sacar</span>
-          </Button>
-        </div>
-      </div>
-    </div>
-  </div>
-        </div>
-      </div>
     </LayoutHome>
   );
 }
