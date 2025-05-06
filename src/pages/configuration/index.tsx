@@ -20,7 +20,7 @@ export function Configuration() {
         <Heading className="flex w-full font-bold text-white">
           Configurações
         </Heading>
-        <Button className="w-80 mr-[610px] bg-yellow-500 hover:bg-yellow-500 text-black">
+        <Button className="w-80 mr-[610px] rounded">
           Salvar Alterações
         </Button>
       </div>
@@ -137,7 +137,7 @@ export function Configuration() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-300 text-sm">Alterar senha</span>
-                <Button className="border-yellow-500 text-black hover:bg-white text-sm py-1 px-3">
+                <Button className=" text-sm py-1 px-3">
                   Alterar
                 </Button>
               </div>
