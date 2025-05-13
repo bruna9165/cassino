@@ -16,6 +16,31 @@ import {
 } from "@/components/ui/alert-dialog";
 import { differenceInYears } from "date-fns";
 
+const validateCpf = (cpf: string): boolean => {
+  const cleanedCpf = cpf.replace(/\D/g, "");
+
+  if (cleanedCpf.length !== 11) return false;
+
+  if (/^(\d)\1+$/.test(cleanedCpf)) return false;
+
+  const calculateCheckDigit = (cpf: string, length: number): number => {
+    let sum = 0;
+    for (let i = 0; i < length; i++) {
+      sum += parseInt(cpf[i]) * (length + 1 - i);
+    }
+    const remainder = sum % 11;
+    return remainder < 2 ? 0 : 11 - remainder;
+  };
+
+  const firstCheckDigit = calculateCheckDigit(cleanedCpf, 9);
+  if (firstCheckDigit !== parseInt(cleanedCpf[9])) return false;
+
+  const secondCheckDigit = calculateCheckDigit(cleanedCpf, 10);
+  if (secondCheckDigit !== parseInt(cleanedCpf[10])) return false;
+
+  return true;
+};
+
 export function Register() {
   const [nome, setNome] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -25,6 +50,7 @@ export function Register() {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
+  const [cpfError, setCpfError] = useState<string>(""); // Added CPF error state
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const validateAge = (date: string): boolean => {
@@ -38,13 +64,18 @@ export function Register() {
     event.preventDefault();
     setError("");
     setEmailError("");
+    setCpfError(""); // Reset CPF error
     setFieldErrors({});
 
     const errors: { [key: string]: string } = {};
 
     if (!nome) errors.nome = "Esse campo é obrigatório";
     if (!email) errors.email = "Esse campo é obrigatório";
-    if (!cpf) errors.cpf = "Esse campo é obrigatório";
+    if (!cpf) {
+      errors.cpf = "Esse campo é obrigatório";
+    } else if (!validateCpf(cpf)) {
+      errors.cpf = "CPF inválido";
+    }
     if (!dataNascimento) errors.dataNascimento = "Esse campo é obrigatório";
     if (!senha) errors.senha = "Esse campo é obrigatório";
 
@@ -63,6 +94,8 @@ export function Register() {
       setShowDialog(true);
     } else if (resultado.status === 500) {
       setEmailError("Email já cadastrado");
+    } else if (resultado.status === 404) {
+      setCpfError("CPF já cadastrado"); // Set CPF error for 404
     } else {
       setError("Erro ao cadastrar. Tente novamente.");
     }
@@ -70,7 +103,9 @@ export function Register() {
 
   const handleInputChange = (field: string, value: string) => {
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
-    setEmailError(""); 
+    setEmailError("");
+    setCpfError(""); // Clear CPF error on input change
+    setError("");
     switch (field) {
       case "nome":
         setNome(value);
@@ -79,7 +114,13 @@ export function Register() {
         setEmail(value);
         break;
       case "cpf":
-        setCpf(value);
+        const cleanedValue = value.replace(/\D/g, "");
+        const formattedCpf = cleanedValue
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+          .slice(0, 14);
+        setCpf(formattedCpf);
         break;
       case "dataNascimento":
         setDataNascimento(value);
@@ -174,11 +215,11 @@ export function Register() {
                   label="CPF"
                   placeholder="Digite seu CPF"
                   iconRight={<UserRound />}
-                  className={`w-96 ${fieldErrors.cpf ? "border-red-500" : ""}`}
+                  className={`w-96 ${fieldErrors.cpf || cpfError ? "border-red-500" : ""}`} // Add cpfError to border condition
                 />
-                {fieldErrors.cpf && (
+                {(fieldErrors.cpf || cpfError) && (
                   <label className="absolute text-red-500 text-sm mt-1">
-                    {fieldErrors.cpf}
+                    {fieldErrors.cpf || cpfError} {/* Display CPF error */}
                   </label>
                 )}
               </div>

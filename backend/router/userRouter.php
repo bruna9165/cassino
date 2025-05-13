@@ -20,8 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $senha_hash = hash("sha256", $senha);
 
             $verificarEmail = $userController->BuscarEmail($email);
+            $verificarCPF = $userController->BuscarCPF($cpf);
             if ($verificarEmail) {
                 echo json_encode(array("status" => 500, "message" => "Email já cadastrado!"));
+            }else if ($verificarCPF){
+                echo json_encode(array("status" => 404, "message" => "CPF já cadastrado!"));
             } else {
                 $resposta = $userController->CriarUsuario($nome, $email, $cpf, $data_nascimento, $senha_hash);
                 if ($resposta) {

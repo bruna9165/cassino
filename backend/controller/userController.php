@@ -25,6 +25,18 @@ class UserController{
             return $th->getMessage();
         }
     }
+    public function BuscarCPF($cpf){
+        try {
+            $sql = "SELECT cpf FROM usuarios WHERE cpf = :cpf";
+            $db = $this->conn->prepare($sql);
+            $db->bindParam(":cpf", $cpf);
+            $db->execute();
+            $user = $db->fetchAll(PDO::FETCH_ASSOC);
+            return $user;
+        } catch (\Exception $th) {
+            return $th->getMessage();
+        }
+    }
 
     public function CriarUsuario($nome, $email, $cpf, $data_nascimento, $senha_hash){
         try {
