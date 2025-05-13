@@ -5,17 +5,7 @@ import {
     List,
     ListItem,
     ListItemPrefix,
-    ListItemSuffix,
-    Chip,
   } from "@material-tailwind/react";
-  import {
-    PresentationChartBarIcon,
-    ShoppingBagIcon,
-    UserCircleIcon,
-    Cog6ToothIcon,
-    InboxIcon,
-    PowerIcon,
-  } from "@heroicons/react/24/solid";
 import { Separator } from "../ui/separator";
 import { CircleDollarSign, CircleUserRound, Gamepad2, LogOut, Settings } from "lucide-react";
 

@@ -7,7 +7,7 @@ import { CircleDollarSign } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
 import { DollarSign } from "lucide-react"
 import { DepositSection } from "@/components/Deposito/deposito";
-
+ 
 interface Transaction {
   id: string;
   type: "deposit" | "withdrawal" | "game";
@@ -17,12 +17,12 @@ interface Transaction {
   date: string;
   status: "COMPLETED" | "PENDING" | "FAILED";
 }
-
+ 
 export function Transactions() {
   const [balance] = useState(5250.0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("Todos");
-
+ 
   const transactions: Transaction[] = [
     {
       id: "1",
@@ -77,7 +77,7 @@ export function Transactions() {
       status: "COMPLETED",
     },
   ];
-
+ 
   const tabs = ["Todos", "Depósitos", "Saques", "Histórico de Jogadas"];
   const handleDeposit = (amount: number, method: string) => {
     // In a real app, this would call an API to process the deposit
@@ -90,15 +90,15 @@ export function Transactions() {
       status: "completed",
     }
   }
-  
-
+ 
+ 
   return (
     <LayoutHome>
-      <div>
-
-        <Heading className="" >Saldo e Transações</Heading>
+      <div className="flex items-center">
+ 
+        <Heading className="flex w-full font-bold text-white" >Saldo e Transações</Heading>
       </div>
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-6 mt-9">
           {/* Transaction History - Left Column */}
           <div className="col-span-8">
             <div className="bg-[#1D1F2C] rounded-lg p-6">
@@ -142,7 +142,7 @@ export function Transactions() {
                     ))}
                   </div>
                 </div>
-
+ 
                 <div className="space-y-4">
                   {transactions.map((transaction) => (
                     <div
