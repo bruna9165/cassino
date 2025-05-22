@@ -50,7 +50,7 @@ export function Register() {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
-  const [cpfError, setCpfError] = useState<string>(""); // Added CPF error state
+  const [cpfError, setCpfError] = useState<string>(""); 
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const validateAge = (date: string): boolean => {
@@ -64,7 +64,7 @@ export function Register() {
     event.preventDefault();
     setError("");
     setEmailError("");
-    setCpfError(""); // Reset CPF error
+    setCpfError(""); 
     setFieldErrors({});
 
     const errors: { [key: string]: string } = {};
@@ -95,7 +95,7 @@ export function Register() {
     } else if (resultado.status === 500) {
       setEmailError("Email já cadastrado");
     } else if (resultado.status === 404) {
-      setCpfError("CPF já cadastrado"); // Set CPF error for 404
+      setCpfError("CPF já cadastrado"); 
     } else {
       setError("Erro ao cadastrar. Tente novamente.");
     }
@@ -104,7 +104,7 @@ export function Register() {
   const handleInputChange = (field: string, value: string) => {
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
     setEmailError("");
-    setCpfError(""); // Clear CPF error on input change
+    setCpfError(""); 
     setError("");
     switch (field) {
       case "nome":
