@@ -37,7 +37,7 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
   }
 
   return (
-    <Card className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-6">
+    <Card className="bg-[#1D1F2C] w- rounded-lg border border-gray-800 p-6">
       <CardHeader>
         <CardTitle>Depósito</CardTitle>
         <CardDescription>Escolha um método de pagamento para adicionar fundos à sua conta.</CardDescription>
