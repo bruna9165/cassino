@@ -4,13 +4,11 @@ include_once __DIR__ . "/../db/db.php";
 class UserController{
     private $conn;
     public $table = "usuario";
-    
 
     public function __construct()
     {
         $objDb = new Bd();
         $this->conn = $objDb->connect();
-
     }
 
     public function BuscarEmail($email){
@@ -70,11 +68,6 @@ class UserController{
         }else{
             return false;
         }
-
     }
-
-
-    
 }
-
 ?>

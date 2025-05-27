@@ -5,16 +5,12 @@ class TransactionsController{
     private $conn;
     public $table = "usuario";
     
-
     public function __construct()
     {
         $objDb = new Bd();
         $this->conn = $objDb->connect();
 
     }
-
-    
-    
 
     public function BuscarSaldo($id_usuario){
         try {
@@ -28,10 +24,5 @@ class TransactionsController{
             return $th->getMessage();
         }
     }
-    
-
-
-    
 }
-
 ?>
