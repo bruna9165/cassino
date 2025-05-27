@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: http://localhost:5174");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -11,15 +11,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_GET["acao"]) {
         case 'cadastrar':
             $valores = json_decode(file_get_contents("php://input"), true);
-
             $nome = $valores["nome"];
             $email = $valores["email"];
             $cpf = $valores["cpf"];
             $data_nascimento = $valores["data_nascimento"];
             $senha = $valores["senha"];
-
             $senha_hash = hash("sha256", $senha);
-
             $verificarEmail = $userController->BuscarEmail($email);
             $verificarCPF = $userController->BuscarCPF($cpf);
             if ($verificarEmail) {
@@ -35,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
             break;
-        
         default:
             echo "Não achei";
             break;
