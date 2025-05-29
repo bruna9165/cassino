@@ -24,5 +24,39 @@ class TransactionsController{
             return $th->getMessage();
         }
     }
+
+    public function Transacao($metodoPagamento, $id_usuario, $valor, $estado){
+        try {
+            $sql = "INSERT INTO transacoes (id_metodoPagamento, id_usuario, valor, estado) VALUES(:id_metodoPagamento, :id_usuario, :valor, :estado);";
+            $db = $this->conn->prepare($sql);
+            $db->bindParam(":id_metodoPagamento", $metodoPagamento);
+            $db->bindParam(":id_usuario", $id_usuario);
+            $db->bindParam(":valor", $valor);
+            $db->bindParam(":estado", $estado);
+            if($db->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (\Exception $th) {
+            //throw $th;
+        }
+    }
+
+    public function AtualizarSaldo($saldo, $id_usuario){
+        try {
+            $sql = "UPDATE usuarios SET saldo = :saldo WHERE id_usuario = :id_usuario";
+            $db = $this->conn->prepare($sql);
+            $db->bindParam(":saldo", $saldo);
+            $db->bindParam(":id_usuario", $id_usuario, PDO::PARAM_INT);
+            if($db->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (\Exception $th) {
+            //throw $th;
+        }
+    }
 }
 ?>

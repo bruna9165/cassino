@@ -51,7 +51,7 @@ export function Profile() {
         <div className="flex flex-col gap-8">
           <div className="flex items-center gap-6 justify-start">
             <Avatar className="w-32 h-32">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src="../../../public/avatar.jpg" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="flex items-center gap-3 w-80">

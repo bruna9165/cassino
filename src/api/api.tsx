@@ -95,3 +95,24 @@ export async function MudarPerfil(nome: string, email: string) {
         throw error;
     }
 }
+
+export async function Transacao(metodoPagamento: number, valor: number, estado: string) {
+    try {
+        const resposta = await fetch("http://localhost/cassino/backend/router/transactionsRouter.php?acao=transacao", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ metodoPagamento, valor, estado }),
+            credentials: "include"
+        });
+       
+        const dados = await resposta.json();
+        
+        console.log(dados.status)
+        return dados;
+    } catch (error) {
+        console.error("Error in Cadastro:", error);
+        throw error;
+    }
+}

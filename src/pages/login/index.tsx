@@ -12,10 +12,9 @@ export function Login() {
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const [authError, setAuthError] = useState<string>("");
 
-  // Handle input changes and clear corresponding errors
   const InputChange = (field: string, value: string) => {
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
-    setAuthError(""); // Clear auth error when user starts typing
+    setAuthError("");
     switch (field) {
       case "email":
         setEmail(value);

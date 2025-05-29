@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/Sidebar/Sidebar';
 import React from 'react';
 import { cn } from '@/lib/utils'; 
+import { Toaster } from '@/components/ui/toaster';
 
 interface LayoutHomeProps {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export function LayoutHome({ children, className }: LayoutHomeProps) {
     >
       <Sidebar />
       <div className="ml-80 p-14">{children}</div>
+      <Toaster />
     </div>
   );
 }

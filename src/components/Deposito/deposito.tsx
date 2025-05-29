@@ -1,43 +1,94 @@
-"use client"
+import type React from "react";
+import { useState } from "react";
+import { CreditCard, QrCode, Landmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "../ui/Label";
+import { Transacao } from "@/api/api";
 
-import type React from "react"
-
-import { useState } from "react"
-import { CreditCard, QrCode, Landmark } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "../ui/Label"
+type MetodoPagamento = "pix" | "credito" | "debito" | "transferencia";
 
 interface DepositSectionProps {
-  onDeposit: (amount: number, method: string) => void
+  onDeposit: (amount: number, method: string) => void;
 }
 
 export function DepositSection({ onDeposit }: DepositSectionProps) {
-  const [amount, setAmount] = useState("")
-  const [paymentMethod, setPaymentMethod] = useState("pix")
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [metodoPagamento, setMetodoPagamento] = useState<MetodoPagamento>("pix");
+  const [valor, setValor] = useState<string>("");
+  const [estado, setEstado] = useState<string>("deposito");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const metodoMap: Record<MetodoPagamento, number> = {
+    pix: 1,
+    credito: 2,
+    debito: 3,
+    transferencia: 4,
+  };
 
-    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
-      return
+  const handleMetodoChange = (value: MetodoPagamento) => {
+    setMetodoPagamento(value);
+    console.log("Método de pagamento selecionado:", value);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value.replace(/[^0-9]/g, "");
+    if (input === "") {
+      setValor("");
+      return;
     }
 
-    setIsProcessing(true)
+    const num = parseFloat(input) / 100;
+    if (!isNaN(num)) {
+      setValor(num.toFixed(2));
+    } else {
+      setValor("");
+    }
+  };
 
-    // Simulate API call
-    setTimeout(() => {
-      onDeposit(Number(amount), paymentMethod)
-      setAmount("")
-      setIsProcessing(false)
-    }, 1000)
-  }
+  const handleBlur = () => {
+    const num = parseFloat(valor);
+    if (!isNaN(num)) {
+      setValor(num.toFixed(2));
+    } else {
+      setValor("");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const amount = parseFloat(valor);
+
+    if (!valor || isNaN(amount) || amount <= 0) {
+      setErrorMessage("Digite um valor válido para depositar");
+      return;
+    }
+
+    if (amount < 5) {
+      setErrorMessage("Valor mínimo para depósito é cinco reais");
+      return;
+    }
+
+    setErrorMessage("");
+
+    const metodoNumero = metodoMap[metodoPagamento];
+    console.log("Estado atual:", estado);
+    console.log("Valores enviados para Transacao:", { metodoNumero, amount, estado });
+    const resultado = await Transacao(metodoNumero, amount, estado);
+    if (resultado.status === 200) {
+      console.log("Transação realizada com sucesso!");
+      onDeposit(amount, metodoPagamento);
+      setValor("");
+      setMetodoPagamento("pix");
+    } else {
+      console.error("Erro ao realizar transação:", resultado);
+      setErrorMessage("Falha ao processar a transação. Tente novamente.");
+    }
+  };
 
   return (
-    <Card className="bg-[#1D1F2C] w- rounded-lg border border-gray-800 p-6">
+    <Card className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-6">
       <CardHeader>
         <CardTitle>Depósito</CardTitle>
         <CardDescription>Escolha um método de pagamento para adicionar fundos à sua conta.</CardDescription>
@@ -52,21 +103,28 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
               </div>
               <Input
                 id="amount"
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="0.00"
-                className="pl-7"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                min="0.01"
-                step="0.01"
+                className={`pl-7 ${errorMessage ? "border-red-500" : ""}`}
+                value={valor}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
                 required
               />
+              {errorMessage && (
+                <Label className="text-red-500 text-sm mt-1">{errorMessage}</Label>
+              )}
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Método de Pagamento</Label>
-            <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid items-center h-auto grid-cols-2 gap-4">
+            <RadioGroup
+              value={metodoPagamento}
+              onValueChange={(value) => handleMetodoChange(value as MetodoPagamento)}
+              className="grid items-center h-auto grid-cols-2 gap-4"
+            >
               <div className="h-full w-full">
                 <RadioGroupItem value="pix" id="pix" className="peer sr-only" />
                 <Label
@@ -79,9 +137,9 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
               </div>
 
               <div>
-                <RadioGroupItem value="credit" id="credit" className="peer sr-only" />
+                <RadioGroupItem value="credito" id="credito" className="peer sr-only" />
                 <Label
-                  htmlFor="credit"
+                  htmlFor="credito"
                   className="flex flex-col h-24 items-center justify-center rounded-md border border-solid bg-[#1D1F2C] p-4 hover:border-yellow-600 hover:text-yellow-600 peer-data-[state=checked]:text-yellow-600 [&:has([data-state=checked])]:border-yellow-600 [&:has([data-state=checked])]:text-yellow-600"
                 >
                   <CreditCard className="mb-2 h-6 w-6" />
@@ -89,21 +147,21 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
                 </Label>
               </div>
 
-
               <div>
-                <RadioGroupItem value="wallet" id="wallet" className="peer sr-only" />
+                <RadioGroupItem value="debito" id="debito" className="peer sr-only" />
                 <Label
-                  htmlFor="wallet"
+                  htmlFor="debito"
                   className="flex flex-col h-24 items-center justify-center rounded-md border border-solid bg-[#1D1F2C] p-4 hover:border-yellow-600 hover:text-yellow-600 peer-data-[state=checked]:text-yellow-600 [&:has([data-state=checked])]:border-yellow-600 [&:has([data-state=checked])]:text-yellow-600"
                 >
                   <CreditCard className="mb-2 h-6 w-6" />
                   Cartão de Débito
                 </Label>
               </div>
+
               <div>
-                <RadioGroupItem value="bank" id="bank" className="peer sr-only" />
+                <RadioGroupItem value="transferencia" id="transferencia" className="peer sr-only" />
                 <Label
-                  htmlFor="bank"
+                  htmlFor="transferencia"
                   className="flex flex-col h-24 text-center items-center justify-center rounded-md border border-solid bg-[#1D1F2C] p-4 hover:border-yellow-600 hover:text-yellow-600 peer-data-[state=checked]:text-yellow-600 [&:has([data-state=checked])]:border-yellow-600 [&:has([data-state=checked])]:text-yellow-600"
                 >
                   <Landmark className="mb-2 h-6 w-6" />
@@ -114,15 +172,11 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button
-            type="submit"
-            className="w-full mt-4"
-            
-          >
+          <Button type="submit" className="w-full mt-4">
             Depositar
           </Button>
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }

@@ -1,7 +1,8 @@
+"use client"
+
 import { LayoutHome } from "@/layout/LayoutHome";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { CircleDollarSign, CreditCard, Landmark, QrCode, Wallet, DollarSign } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
@@ -10,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/Label";
 import { BuscarSaldo } from "@/api/api";
+import { useToast } from "@/hooks/use-toast";
 
 interface Transaction {
   id: string;
@@ -25,6 +27,7 @@ export function Transactions() {
   const [saldo, setSaldo] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("Todos");
+  const { toast } = useToast()
 
   const transactions: Transaction[] = [
     {
@@ -83,13 +86,12 @@ export function Transactions() {
 
   const tabs = ["Todos", "Depósitos", "Saques", "Histórico de Jogadas"];
 
-  // Busca o saldo ao montar o componente
   useEffect(() => {
     async function fetchSaldo() {
       try {
         const dados = await BuscarSaldo();
         if (dados.status === 200) {
-          setSaldo(dados.saldo); // Atualiza o estado com o saldo retornado
+          setSaldo(dados.saldo);
         }
       } catch (error) {
         console.error("Erro ao buscar saldo:", error);
@@ -252,9 +254,9 @@ export function Transactions() {
                         <AlertDialogDescription>
                           <RadioGroup className="grid items-center h-auto grid-cols-2 gap-4">
                             <div className="h-full w-full">
-                              <RadioGroupItem value="pix" id="pix" className="peer sr-only" />
+                              <RadioGroupItem value="1" id="pixSaque" className="peer sr-only" />
                               <Label
-                                htmlFor="pix"
+                                htmlFor="pixSaque"
                                 className="flex flex-col h-24 items-center justify-center rounded-md border border-solid bg-[#1D1F2C] p-4 hover:border-yellow-600 hover:text-yellow-600 peer-data-[state=checked]:text-yellow-600 [&:has([data-state=checked])]:border-yellow-600 [&:has([data-state=checked])]:text-yellow-600"
                               >
                                 <QrCode className="mb-2 h-6 w-6" />
@@ -262,9 +264,9 @@ export function Transactions() {
                               </Label>
                             </div>
                             <div>
-                              <RadioGroupItem value="bank" id="bank" className="peer sr-only" />
+                              <RadioGroupItem value="2" id="bankSaque" className="peer sr-only" />
                               <Label
-                                htmlFor="bank"
+                                htmlFor="bankSaque"
                                 className="flex flex-col h-24 text-center items-center justify-center rounded-md border border-solid bg-[#1D1F2C] p-4 hover:border-yellow-600 hover:text-yellow-600 peer-data-[state=checked]:text-yellow-600 [&:has([data-state=checked])]:border-yellow-600 [&:has([data-state=checked])]:text-yellow-600"
                               >
                                 <Landmark className="mb-2 h-6 w-6" />
@@ -276,7 +278,9 @@ export function Transactions() {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
+                        <AlertDialogAction
+                        
+                        >Continue</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
