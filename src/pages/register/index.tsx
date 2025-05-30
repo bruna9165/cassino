@@ -69,15 +69,15 @@ export function Register() {
 
     const errors: { [key: string]: string } = {};
 
-    if (!nome) errors.nome = "Esse campo é obrigatório";
-    if (!email) errors.email = "Esse campo é obrigatório";
+    if (!nome) errors.nome = "Esse campo é obrigatório.";
+    if (!email) errors.email = "Esse campo é obrigatório.";
     if (!cpf) {
       errors.cpf = "Esse campo é obrigatório";
     } else if (!validateCpf(cpf)) {
-      errors.cpf = "CPF inválido";
+      errors.cpf = "CPF inválido.";
     }
-    if (!dataNascimento) errors.dataNascimento = "Esse campo é obrigatório";
-    if (!senha) errors.senha = "Esse campo é obrigatório";
+    if (!dataNascimento) errors.dataNascimento = "Esse campo é obrigatório.";
+    if (!senha) errors.senha = "Esse campo é obrigatório.";
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -93,9 +93,9 @@ export function Register() {
     if (resultado.status === 200) {
       setShowDialog(true);
     } else if (resultado.status === 500) {
-      setEmailError("Email já cadastrado");
+      setEmailError("Email já cadastrado.");
     } else if (resultado.status === 404) {
-      setCpfError("CPF já cadastrado"); 
+      setCpfError("CPF já cadastrado."); 
     } else {
       setError("Erro ao cadastrar. Tente novamente.");
     }
@@ -215,11 +215,11 @@ export function Register() {
                   label="CPF"
                   placeholder="Digite seu CPF"
                   iconRight={<UserRound />}
-                  className={`w-96 ${fieldErrors.cpf || cpfError ? "border-red-500" : ""}`} // Add cpfError to border condition
+                  className={`w-96 ${fieldErrors.cpf || cpfError ? "border-red-500" : ""}`}
                 />
                 {(fieldErrors.cpf || cpfError) && (
                   <label className="absolute text-red-500 text-sm mt-1">
-                    {fieldErrors.cpf || cpfError} {/* Display CPF error */}
+                    {fieldErrors.cpf || cpfError}
                   </label>
                 )}
               </div>

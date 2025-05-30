@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { CreditCard, QrCode, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,16 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/Label";
 import { Transacao } from "@/api/api";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+} from "../ui/alert-dialog";
+import { Heading } from "../ui/heading";
 
 type MetodoPagamento = "pix" | "credito" | "debito" | "transferencia";
 
@@ -19,6 +29,8 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
   const [valor, setValor] = useState<string>("");
   const [estado, setEstado] = useState<string>("deposito");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const metodoMap: Record<MetodoPagamento, number> = {
     pix: 1,
@@ -33,6 +45,7 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage(""); // Limpa a mensagem de erro ao digitar
     let input = e.target.value.replace(/[^0-9]/g, "");
     if (input === "") {
       setValor("");
@@ -61,12 +74,17 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
     const amount = parseFloat(valor);
 
     if (!valor || isNaN(amount) || amount <= 0) {
-      setErrorMessage("Digite um valor válido para depositar");
+      setErrorMessage("Digite um valor válido para depositar.");
       return;
     }
 
     if (amount < 5) {
-      setErrorMessage("Valor mínimo para depósito é cinco reais");
+      setErrorMessage("Valor mínimo para depósito é cinco reais.");
+      return;
+    }
+
+    if (amount > 3000) {
+      setErrorMessage("Valor máximo para depósito é três mil reais.");
       return;
     }
 
@@ -87,13 +105,32 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
     }
   };
 
+  const handleConfirm = () => {
+    if (formRef.current) {
+      formRef.current.requestSubmit();
+    }
+  };
+
+  const handleDepositClick = () => {
+    const amount = parseFloat(valor);
+    if (!valor || isNaN(amount) || amount <= 0) {
+      setErrorMessage("Digite um valor válido para depositar.");
+    } else if (amount < 5) {
+      setErrorMessage("Valor mínimo para depósito é cinco reais.");
+    } else if (amount > 3000) {
+      setErrorMessage("Valor máximo para depósito é três mil reais.");
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <Card className="bg-[#1D1F2C] rounded-lg border border-gray-800 p-6">
       <CardHeader>
         <CardTitle>Depósito</CardTitle>
         <CardDescription>Escolha um método de pagamento para adicionar fundos à sua conta.</CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form ref={formRef} onSubmit={handleSubmit}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="amount">Quantia</Label>
@@ -172,9 +209,21 @@ export function DepositSection({ onDeposit }: DepositSectionProps) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full mt-4">
-            Depositar
-          </Button>
+          <Button type="button" onClick={handleDepositClick} className="w-full mt-4">Depositar</Button>
+          <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <Heading align="center">Confirmar Depósito</Heading>
+                <AlertDialogDescription className="text-center text-base text-slate-400">
+                  Tem certeza de que deseja confirmar esse depósito?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleConfirm}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardFooter>
       </form>
     </Card>

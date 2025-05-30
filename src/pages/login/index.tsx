@@ -32,8 +32,8 @@ export function Login() {
 
     const errors: { [key: string]: string } = {};
 
-    if (!email) errors.email = "Esse campo é obrigatório";
-    if (!senha) errors.senha = "Esse campo é obrigatório";
+    if (!email) errors.email = "Esse campo é obrigatório.";
+    if (!senha) errors.senha = "Esse campo é obrigatório.";
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
